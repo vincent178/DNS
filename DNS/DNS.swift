@@ -9,103 +9,61 @@
 import Foundation
 import Network
 
-extension UInt16 {
-    func toUInt8() -> [UInt8] {
-        return [UInt8(self >> 8), UInt8(self & 0xff)]
+public class DNSService {
+    private let connection: NWConnection
+    
+    public typealias Handler = (Result<[String], Error>) -> Void
+    
+    public init(nsserver: NWEndpoint.Host?, port: NWEndpoint.Port?) {
+        self.connection = NWConnection(host: nsserver ?? "8.8.8.8", port: port ?? 53, using: .udp)
     }
-}
-
-extension Bool {
-    func toUInt8() -> UInt8 {
-        return self ? 0x01 : 0x00
-    }
-}
-
-// https://www.ietf.org/rfc/rfc1035.txt 4.1.1. Header section format
-struct DNSQuery {
-    var ID: UInt16
-    var QR: Bool = false
-    var Opcode: UInt8 = 0x0
     
-    var AA: Bool = false
-    var TC: Bool = false
-    var RD: Bool = false
-    var RA: Bool = false
-    var Z: UInt8 = 0x0
-    var ResponseCode: UInt8 = 0x0
-    
-    var QDCount: UInt16 = 0x0000
-    var ANCount: UInt16 = 0x0000
-    var NSCount: UInt16 = 0x0000
-    var ARCount: UInt16 = 0x0000
-    
-    var Questions: Array<DNSQuestion>
-    
-    func encode() -> [UInt8] {
-        var bytes: [UInt8] = []
-        
-        let qd = UInt16(self.Questions.count)
-        
-        bytes.append(contentsOf: self.ID.toUInt8())
-        
-        // QR|   Opcode  |AA|TC|RD
-        let qr = UInt8(self.QR.toUInt8() << 7)
-        let op = UInt8(self.Opcode << 3)
-        let aa = UInt8(self.AA.toUInt8() << 2)
-        let tc = UInt8(self.TC.toUInt8() << 1)
-        let rd = UInt8(self.RD.toUInt8())
-        bytes.append(qr | op | aa | tc | rd)
-        
-        // RA|   Z    |   RCODE
-        let ra = UInt8(self.RA.toUInt8() << 7)
-        let z = self.Z << 4
-        bytes.append(ra | z | self.ResponseCode)
-        
-        bytes.append(contentsOf: qd.toUInt8())
-        bytes.append(contentsOf: self.ANCount.toUInt8())
-        bytes.append(contentsOf: self.NSCount.toUInt8())
-        bytes.append(contentsOf: self.ARCount.toUInt8())
-        
-        _ = self.Questions.map { bytes.append(contentsOf: $0.encode()) }
-        
-        return bytes
-    }
-}
-
-// https://www.ietf.org/rfc/rfc1035.txt 4.1.2. Question section format
-struct DNSQuestion {
-    var Domain: String
-    var Typ: UInt16
-    var Class: UInt16
-    
-    func encode() -> [UInt8] {
-        var bytes: [UInt8] = []
-        
-        _ = self.Domain.split(separator: ".").map {
-            let length = $0.count
-            bytes.append(UInt8(length))
-            bytes.append(contentsOf: Array($0.utf8))
+    public func query(domain: String, completionHandler: @escaping Handler) {
+        if self.connection.stateUpdateHandler == nil {
+            self.connection.stateUpdateHandler = { (newState) in
+                switch (newState) {
+                case .ready:
+                    // TODO: replace with logger
+                    print("ready")
+                    
+                    let q: DNSQuestion = DNSQuestion(Domain: domain, Typ: 0x1, Class: 0x1)
+                    let query: DNSRR = DNSRR(ID: 0xAAAA, RD: true, Questions: [q], Answers: [])
+                    
+                    self.connection.send(content: query.serialize(), completion: NWConnection.SendCompletion.contentProcessed(({ (NWError) in
+                        print(NWError!)
+                    })))
+                    self.connection.receiveMessage { (data, context, isComplete, error) in
+                        if error != nil {
+                            print("ERROR: ", error!.localizedDescription)
+                            return
+                        }
+                        
+                        if !isComplete {
+                            print("isComplete false not support yet")
+                            return
+                        }
+                        
+                        let responseCode = data![3] & 0xF
+                        
+                        if responseCode != 0 {
+                            print("DNS ERROR")
+                            return
+                        }
+                        
+                        DNSRR.deserialize(data: [UInt8](data!))
+                    }
+                   
+                case .setup:
+                    print("setup")
+                case .cancelled:
+                    print("cancelled")
+                case .preparing:
+                    print("Preparing")
+                default:
+                    print("waiting or failed")
+                }
+            }
+            self.connection.start(queue: .global())
         }
-        
-        bytes.append(0)
-        
-        print("domain length: ", bytes.count)
-        
-        print("domain: ", bytes)
-        
-        bytes.append(contentsOf: self.Typ.toUInt8())
-        bytes.append(contentsOf: self.Class.toUInt8())
-        
-        return bytes
     }
 }
-
-struct DNSResource {
-    var Domain: String // dynamic length
-    var Typ: UInt16
-    var Class: UInt16
-    var TTL: UInt32
-    var RDLength: UInt16
-    var RData: String
-}
-

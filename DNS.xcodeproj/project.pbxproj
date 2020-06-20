@@ -8,7 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		241F6CFA249D60FE00D5D298 /* DNS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241F6CF9249D60FE00D5D298 /* DNS.swift */; };
+		241F6D0A249D629800D5D298 /* DNSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241F6D09249D629800D5D298 /* DNSTests.swift */; };
+		241F6D0C249D629800D5D298 /* libDNS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 241F6CF6249D60FE00D5D298 /* libDNS.a */; };
+		241F6D13249D637000D5D298 /* RR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241F6D12249D637000D5D298 /* RR.swift */; };
+		241F6D15249D638300D5D298 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241F6D14249D638300D5D298 /* Extension.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		241F6D0D249D629800D5D298 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 241F6CEE249D60FE00D5D298 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 241F6CF5249D60FE00D5D298;
+			remoteInfo = DNS;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		241F6CF4249D60FE00D5D298 /* CopyFiles */ = {
@@ -25,6 +39,11 @@
 /* Begin PBXFileReference section */
 		241F6CF6249D60FE00D5D298 /* libDNS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDNS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		241F6CF9249D60FE00D5D298 /* DNS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DNS.swift; sourceTree = "<group>"; };
+		241F6D07249D629800D5D298 /* DNSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DNSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		241F6D09249D629800D5D298 /* DNSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DNSTests.swift; sourceTree = "<group>"; };
+		241F6D0B249D629800D5D298 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		241F6D12249D637000D5D298 /* RR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RR.swift; sourceTree = "<group>"; };
+		241F6D14249D638300D5D298 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +54,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		241F6D04249D629800D5D298 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				241F6D0C249D629800D5D298 /* libDNS.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -42,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				241F6CF8249D60FE00D5D298 /* DNS */,
+				241F6D08249D629800D5D298 /* DNSTests */,
 				241F6CF7249D60FE00D5D298 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				241F6CF6249D60FE00D5D298 /* libDNS.a */,
+				241F6D07249D629800D5D298 /* DNSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -58,8 +87,19 @@
 			isa = PBXGroup;
 			children = (
 				241F6CF9249D60FE00D5D298 /* DNS.swift */,
+				241F6D12249D637000D5D298 /* RR.swift */,
+				241F6D14249D638300D5D298 /* Extension.swift */,
 			);
 			path = DNS;
+			sourceTree = "<group>";
+		};
+		241F6D08249D629800D5D298 /* DNSTests */ = {
+			isa = PBXGroup;
+			children = (
+				241F6D09249D629800D5D298 /* DNSTests.swift */,
+				241F6D0B249D629800D5D298 /* Info.plist */,
+			);
+			path = DNSTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -82,6 +122,24 @@
 			productReference = 241F6CF6249D60FE00D5D298 /* libDNS.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		241F6D06249D629800D5D298 /* DNSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 241F6D0F249D629800D5D298 /* Build configuration list for PBXNativeTarget "DNSTests" */;
+			buildPhases = (
+				241F6D03249D629800D5D298 /* Sources */,
+				241F6D04249D629800D5D298 /* Frameworks */,
+				241F6D05249D629800D5D298 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				241F6D0E249D629800D5D298 /* PBXTargetDependency */,
+			);
+			name = DNSTests;
+			productName = DNSTests;
+			productReference = 241F6D07249D629800D5D298 /* DNSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -93,6 +151,9 @@
 				ORGANIZATIONNAME = "Vincent Huang";
 				TargetAttributes = {
 					241F6CF5249D60FE00D5D298 = {
+						CreatedOnToolsVersion = 11.2.1;
+					};
+					241F6D06249D629800D5D298 = {
 						CreatedOnToolsVersion = 11.2.1;
 					};
 				};
@@ -111,20 +172,49 @@
 			projectRoot = "";
 			targets = (
 				241F6CF5249D60FE00D5D298 /* DNS */,
+				241F6D06249D629800D5D298 /* DNSTests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		241F6D05249D629800D5D298 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		241F6CF2249D60FE00D5D298 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				241F6D15249D638300D5D298 /* Extension.swift in Sources */,
 				241F6CFA249D60FE00D5D298 /* DNS.swift in Sources */,
+				241F6D13249D637000D5D298 /* RR.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		241F6D03249D629800D5D298 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				241F6D0A249D629800D5D298 /* DNSTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		241F6D0E249D629800D5D298 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 241F6CF5249D60FE00D5D298 /* DNS */;
+			targetProxy = 241F6D0D249D629800D5D298 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		241F6CFB249D60FE00D5D298 /* Debug */ = {
@@ -267,6 +357,42 @@
 			};
 			name = Release;
 		};
+		241F6D10249D629800D5D298 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = S2X824W2YT;
+				INFOPLIST_FILE = DNSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.vincent178.DNSTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		241F6D11249D629800D5D298 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = S2X824W2YT;
+				INFOPLIST_FILE = DNSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.vincent178.DNSTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -284,6 +410,15 @@
 			buildConfigurations = (
 				241F6CFE249D60FE00D5D298 /* Debug */,
 				241F6CFF249D60FE00D5D298 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		241F6D0F249D629800D5D298 /* Build configuration list for PBXNativeTarget "DNSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				241F6D10249D629800D5D298 /* Debug */,
+				241F6D11249D629800D5D298 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
