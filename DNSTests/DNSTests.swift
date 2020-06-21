@@ -66,4 +66,37 @@ class DNSTests: XCTestCase {
             }
         })
     }
+    
+    func testQueryReuseConnection() {
+        let exp = expectation(description: "query dns")
+
+        let ds = DNSService.init()
+        ds.query(domain: "vincent178.site", completion: { (rr, err) in
+            XCTAssertNil(err)
+            XCTAssertNotNil(rr)
+            
+            XCTAssertEqual(rr!.Questions[0].Domain, "vincent178.site")
+            XCTAssertEqual(rr!.ANCount, 3)
+            XCTAssertEqual(rr!.Answers.map { $0.RData }.sorted(), ["104.28.23.47", "172.67.130.241", "104.28.22.47"].sorted())
+            
+            ds.query(domain: "vincent178.site", completion: { (rr, err) in
+                ds.stop()
+                
+                XCTAssertNil(err)
+                XCTAssertNotNil(rr)
+                
+                XCTAssertEqual(rr!.Questions[0].Domain, "vincent178.site")
+                XCTAssertEqual(rr!.ANCount, 3)
+                XCTAssertEqual(rr!.Answers.map { $0.RData }.sorted(), ["104.28.23.47", "172.67.130.241", "104.28.22.47"].sorted())
+                
+                exp.fulfill()
+            })
+        })
+        
+        waitForExpectations(timeout: 3, handler: { error in
+            if error != nil {
+                XCTFail("waitForExpectations error \(error.debugDescription)")
+            }
+        })
+    }
 }
