@@ -23,8 +23,6 @@ class DNSTests: XCTestCase {
         let exp = expectation(description: "query dns")
 
         let ds = DNSService.init()
-        ds.start()
-        sleep(1)
         ds.query(domain: "vincent178.site", completion: { (rr, err) in
             ds.stop()
             
@@ -49,8 +47,6 @@ class DNSTests: XCTestCase {
         let exp = expectation(description: "query dns")
 
         let ds = DNSService.init(host: "ns-926.awsdns-51.net")
-        ds.start()
-        sleep(1)
         ds.query(domain: "api.disco.goateng.com", completion: { (rr, err) in
             ds.stop()
             

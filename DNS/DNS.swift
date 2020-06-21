@@ -26,52 +26,55 @@ public class DNSService {
         self.state = .cancelled
     }
     
-    public func start() {
-        self.connection.stateUpdateHandler = { newState in
-            switch newState {
-            case .ready:
-                self.state = .ready
-            case .cancelled:
-                self.state = .cancelled
-            case .setup:
-                self.state = .setup
-            case .preparing:
-                self.state = .preparing
-            default:
-                print("waiting")
-            }
-        }
-        self.connection.start(queue: .global())
-    }
-    
     public func query(domain: String, completion: @escaping (DNSRR?, Error?) -> Void) {
-        if self.state != .ready {
-            completion(nil, DNSServiceError.connectionNotReady)
+        func doQuery() -> Void {
+            let q: DNSQuestion = DNSQuestion(Domain: domain, Typ: 0x1, Class: 0x1)
+            let query: DNSRR = DNSRR(ID: 0xAAAA, RD: true, Questions: [q])
+            
+            self.connection.send(content: query.serialize(), completion: NWConnection.SendCompletion.contentProcessed { error in
+                if error != nil {
+                    completion(nil, error)
+                }
+            })
+            
+            self.connection.receiveMessage { (data, context, isComplete, error) in
+                if error != nil {
+                    completion(nil, error)
+                    return
+                }
+                
+                if !isComplete {
+                    completion(nil, DNSServiceError.notComplete)
+                    return
+                }
+                
+                let rr = DNSRR.deserialize(data: [UInt8](data!))
+                completion(rr, nil)
+            }
         }
         
-        let q: DNSQuestion = DNSQuestion(Domain: domain, Typ: 0x1, Class: 0x1)
-        let query: DNSRR = DNSRR(ID: 0xAAAA, RD: true, Questions: [q])
-        
-        self.connection.send(content: query.serialize(), completion: NWConnection.SendCompletion.contentProcessed { error in
-            if error != nil {
-                completion(nil, error)
+        if self.connection.state != .ready {
+            self.connection.stateUpdateHandler = nil
+            self.connection.stateUpdateHandler = { newState in
+                switch newState {
+                case .ready:
+                    self.state = .ready
+                    doQuery()
+                case .cancelled:
+                    self.state = .cancelled
+                case .setup:
+                    self.state = .setup
+                case .preparing:
+                    self.state = .preparing
+                default:
+                    print("waiting")
+                }
             }
-        })
-        
-        self.connection.receiveMessage { (data, context, isComplete, error) in
-            if error != nil {
-                completion(nil, error)
-                return
-            }
-            
-            if !isComplete {
-                completion(nil, DNSServiceError.notComplete)
-                return
-            }
-            
-            let rr = DNSRR.deserialize(data: [UInt8](data!))
-            completion(rr, nil)
+            self.connection.start(queue: .global())
+            return
         }
+        
+        doQuery()
     }
     
     public func stop() {
