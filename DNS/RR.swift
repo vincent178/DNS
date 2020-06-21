@@ -21,15 +21,15 @@ public struct DNSRR {
     var Z: UInt8 = 0x0
     var ResponseCode: UInt8 = 0x0
     
-    var QDCount: UInt16 = 0x0
-    var ANCount: UInt16 = 0x0
+    public var QDCount: UInt16 = 0x0
+    public var ANCount: UInt16 = 0x0
     var NSCount: UInt16 = 0x0
     var ARCount: UInt16 = 0x0
     
-    var Questions: [DNSQuestion] = []
-    var Answers: [DNSResource] = []
+    public var Questions: [DNSQuestion] = []
+    public var Answers: [DNSResource] = []
     
-    func serialize() -> [UInt8] {
+    public func serialize() -> [UInt8] {
         var bytes: [UInt8] = []
         
         let qd = UInt16(self.Questions.count)
@@ -101,13 +101,13 @@ public struct DNSRR {
             pos = pos + offset + 10
             var domain = ""
             if typ == 1 && rlen == 4 {
-                domain = data[pos+offset+10...pos+offset+13].map{ String($0) }.joined(separator: ".")
+                domain = data[pos...pos+3].map{ String($0) }.joined(separator: ".")
                 pos += 4
             } else if typ == 5 {
                 (domain, offset) = deserializeName(data: data, startAt: pos)
                 pos += offset
             } else {
-                print("NOT SUPPORT YET")
+                print("TYPE \(typ) DOES NOT SUPPORT YET")
                 break
             }
             
@@ -133,7 +133,7 @@ public struct DNSRR {
                      Answers: answers)
     }
 
-    public static func deserializeName(data: [UInt8], startAt: Int) -> (String, Int) {
+    private static func deserializeName(data: [UInt8], startAt: Int) -> (String, Int) {
         var ss: [String] = []
         var i = startAt
         while true {
@@ -161,9 +161,9 @@ public struct DNSRR {
 
 // https://www.ietf.org/rfc/rfc1035.txt 4.1.2. Question section format
 public struct DNSQuestion {
-    var Domain: String
-    var Typ: UInt16
-    var Class: UInt16
+    public var Domain: String
+    public var Typ: UInt16
+    public var Class: UInt16
     
     func serialize() -> [UInt8] {
         var bytes: [UInt8] = []
@@ -184,10 +184,10 @@ public struct DNSQuestion {
 }
 
 public struct DNSResource {
-    var Domain: String
-    var Typ: UInt16
-    var Class: UInt16
-    var TTL: UInt32
-    var RDLength: UInt16
-    var RData: String
+    public var Domain: String
+    public var Typ: UInt16
+    public var Class: UInt16
+    public var TTL: UInt32
+    public var RDLength: UInt16
+    public var RData: String
 }
