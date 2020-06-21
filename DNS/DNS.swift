@@ -26,7 +26,7 @@ public class DNSService {
         self.state = .cancelled
     }
     
-    public func query(domain: String, completion: @escaping (DNSRR?, Error?) -> Void) {
+    public func query(domain: String, queue: DispatchQueue, completion: @escaping (DNSRR?, Error?) -> Void) {
         func doQuery() -> Void {
             let q: DNSQuestion = DNSQuestion(Domain: domain, Typ: 0x1, Class: 0x1)
             let query: DNSRR = DNSRR(ID: 0xAAAA, RD: true, Questions: [q])
@@ -70,7 +70,7 @@ public class DNSService {
                     print("waiting")
                 }
             }
-            self.connection.start(queue: .global())
+            self.connection.start(queue: queue)
             return
         }
         

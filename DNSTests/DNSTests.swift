@@ -23,7 +23,7 @@ class DNSTests: XCTestCase {
         let exp = expectation(description: "query dns")
 
         let ds = DNSService.init()
-        ds.query(domain: "vincent178.site", completion: { (rr, err) in
+        ds.query(domain: "vincent178.site", queue: .global(), completion: { (rr, err) in
             ds.stop()
             
             XCTAssertNil(err)
@@ -47,7 +47,7 @@ class DNSTests: XCTestCase {
         let exp = expectation(description: "query dns")
 
         let ds = DNSService.init(host: "ns-926.awsdns-51.net")
-        ds.query(domain: "api.disco.goateng.com", completion: { (rr, err) in
+        ds.query(domain: "api.disco.goateng.com", queue: .global(), completion: { (rr, err) in
             ds.stop()
             
             XCTAssertNil(err)
@@ -71,7 +71,7 @@ class DNSTests: XCTestCase {
         let exp = expectation(description: "query dns")
 
         let ds = DNSService.init()
-        ds.query(domain: "vincent178.site", completion: { (rr, err) in
+        ds.query(domain: "vincent178.site", queue: .global(), completion: { (rr, err) in
             XCTAssertNil(err)
             XCTAssertNotNil(rr)
             
@@ -79,7 +79,7 @@ class DNSTests: XCTestCase {
             XCTAssertEqual(rr!.ANCount, 3)
             XCTAssertEqual(rr!.Answers.map { $0.RData }.sorted(), ["104.28.23.47", "172.67.130.241", "104.28.22.47"].sorted())
             
-            ds.query(domain: "vincent178.site", completion: { (rr, err) in
+            ds.query(domain: "vincent178.site", queue: .global(), completion: { (rr, err) in
                 ds.stop()
                 
                 XCTAssertNil(err)
