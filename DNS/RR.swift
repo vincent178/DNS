@@ -146,6 +146,7 @@ public struct DNSRR {
                      Answers: answers)
     }
 
+    // https://www.ietf.org/rfc/rfc1035.txt 4.1.4. Message compression
     private static func deserializeName(data: [UInt8], startAt: Int) -> (String, Int) {
         var ss: [String] = []
         var i = startAt
@@ -155,7 +156,6 @@ public struct DNSRR {
                 break
             }
             
-            // pointer to name
             if data[i] & 0xC0 == 0xC0 {
                 let (s, _) = deserializeName(data: data, startAt: Int(data[i] & 0x3F << 8)  + Int(data[i+1]))
                 i += 2
