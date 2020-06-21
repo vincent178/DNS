@@ -69,6 +69,19 @@ public struct DNSRR {
         let ra = data[3] >> 7 == 1
         let z = data[3] & 0x70 >> 4
         let responseCode = data[3] & 0x0F
+        
+        if responseCode != 0 {
+            return DNSRR(ID: id,
+                         QR: qr,
+                         Opcode: opcode,
+                         AA: aa,
+                         TC: tc,
+                         RD: rd,
+                         RA: ra,
+                         Z: z,
+                         ResponseCode: responseCode)
+        }
+        
         let qdCount = UInt16(data[4]) << 8 + UInt16(data[5])
         let anCount = UInt16(data[6]) << 8 + UInt16(data[7])
         let nsCount = UInt16(data[8]) << 8 + UInt16(data[9])

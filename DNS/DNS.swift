@@ -11,6 +11,7 @@ import Network
 
 enum DNSServiceError: Error {
     case connectionNotReady
+    case notComplete
 }
 
 // https://developer.apple.com/documentation/network
@@ -64,14 +65,7 @@ public class DNSService {
             }
             
             if !isComplete {
-                print("isComplete \(isComplete) not support yet")
-                return
-            }
-            
-            let responseCode = data![3] & 0xF
-            
-            if responseCode != 0 {
-                print("DNS QUERY ERROR")
+                completion(nil, DNSServiceError.notComplete)
                 return
             }
             
