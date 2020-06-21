@@ -114,6 +114,7 @@ public struct DNSRR {
             pos = pos + offset + 10
             var domain = ""
             if typ == 1 && rlen == 4 {
+                // IPv4 address
                 domain = data[pos...pos+3].map{ String($0) }.joined(separator: ".")
                 pos += 4
             } else if typ == 5 {
@@ -156,8 +157,12 @@ public struct DNSRR {
                 break
             }
             
+            // handle name message compression
+            // * a pointer
+            // * a sequence of labels ending with a pointer
             if data[i] & 0xC0 == 0xC0 {
                 let (s, _) = deserializeName(data: data, startAt: Int(data[i] & 0x3F << 8)  + Int(data[i+1]))
+                // a pointer always take 2 octets
                 i += 2
                 ss.append(s)
                 break
