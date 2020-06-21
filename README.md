@@ -8,6 +8,7 @@ ds.start()
 sleep(1)
 ds.query(domain: "vincent178.site", completion: { (rr, err) in
   // Get ip list rr!.Answers.map { $0.RData }
+  ds.stop() // don't forget to stop service
 })
 ```
 You can also make dns query to a custom name server
@@ -17,5 +18,6 @@ ds.start()
 sleep(1)
 ds.query(domain: "vincent178.site", completion: { (rr, err) in
   // Get ip list rr!.Answers.map { $0.RData }
+  ds.stop() // don't forget to stop service
 })
 ```
