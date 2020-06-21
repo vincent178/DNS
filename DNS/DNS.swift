@@ -19,11 +19,9 @@ enum DNSServiceError: Error {
 public class DNSService {
     private let connection: NWConnection
     private var state: NWConnection.State
-    
-    public typealias Handler = (Result<[String], Error>) -> Void
-    
-    public init(nsserver: NWEndpoint.Host = "8.8.8.8", port: NWEndpoint.Port = 53) {
-        self.connection = NWConnection(host: nsserver, port: port, using: .udp)
+        
+    public init(host: NWEndpoint.Host = "8.8.8.8", port: NWEndpoint.Port = 53) {
+        self.connection = NWConnection(host: host, port: port, using: .udp)
         self.state = .cancelled
     }
     

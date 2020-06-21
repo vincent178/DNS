@@ -44,6 +44,7 @@
 		241F6D0B249D629800D5D298 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		241F6D12249D637000D5D298 /* RR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RR.swift; sourceTree = "<group>"; };
 		241F6D14249D638300D5D298 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		24CDF24E249EEE28000FC6FE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +69,7 @@
 		241F6CED249D60FE00D5D298 = {
 			isa = PBXGroup;
 			children = (
+				24CDF24E249EEE28000FC6FE /* README.md */,
 				241F6CF8249D60FE00D5D298 /* DNS */,
 				241F6D08249D629800D5D298 /* DNSTests */,
 				241F6CF7249D60FE00D5D298 /* Products */,
