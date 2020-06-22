@@ -22,9 +22,7 @@ class DNSTests: XCTestCase {
     func testDNSServiceQuery() {
         let exp = expectation(description: "query dns")
 
-        let ds = DNSService.init()
-        ds.query(domain: "vincent178.site", queue: .global(), completion: { (rr, err) in
-            ds.stop()
+        DNSService.query(domain: "vincent178.site", queue: .global(), completion: { (rr, err) in
             
             XCTAssertNil(err)
             XCTAssertNotNil(rr)
@@ -46,10 +44,7 @@ class DNSTests: XCTestCase {
     func testCustomNameServer() {
         let exp = expectation(description: "query dns")
 
-        let ds = DNSService.init(host: "ns-926.awsdns-51.net")
-        ds.query(domain: "api.disco.goateng.com", queue: .global(), completion: { (rr, err) in
-            ds.stop()
-            
+        DNSService.query(host: "ns-926.awsdns-51.net", domain: "api.disco.goateng.com", queue: .global(), completion: { (rr, err) in
             XCTAssertNil(err)
             XCTAssertNotNil(rr)
 
@@ -67,30 +62,27 @@ class DNSTests: XCTestCase {
         })
     }
     
-    func testQueryReuseConnection() {
+    func testMutipleQuery() {
         let exp = expectation(description: "query dns")
 
-        let ds = DNSService.init()
-        ds.query(domain: "vincent178.site", queue: .global(), completion: { (rr, err) in
+        DNSService.query(domain: "vincent178.site", queue: .global(), completion: { (rr, err) in
             XCTAssertNil(err)
             XCTAssertNotNil(rr)
             
             XCTAssertEqual(rr!.Questions[0].Domain, "vincent178.site")
             XCTAssertEqual(rr!.ANCount, 3)
             XCTAssertEqual(rr!.Answers.map { $0.RData }.sorted(), ["104.28.23.47", "172.67.130.241", "104.28.22.47"].sorted())
+        })
+        
+        DNSService.query(domain: "goat.com", queue: .global(), completion: { (rr, err) in            
+            XCTAssertNil(err)
+            XCTAssertNotNil(rr)
             
-            ds.query(domain: "vincent178.site", queue: .global(), completion: { (rr, err) in
-                ds.stop()
-                
-                XCTAssertNil(err)
-                XCTAssertNotNil(rr)
-                
-                XCTAssertEqual(rr!.Questions[0].Domain, "vincent178.site")
-                XCTAssertEqual(rr!.ANCount, 3)
-                XCTAssertEqual(rr!.Answers.map { $0.RData }.sorted(), ["104.28.23.47", "172.67.130.241", "104.28.22.47"].sorted())
-                
-                exp.fulfill()
-            })
+            XCTAssertEqual(rr!.Questions[0].Domain, "goat.com")
+            XCTAssertEqual(rr!.ANCount, 3)
+            XCTAssertEqual(rr!.Answers.map { $0.RData }.sorted(), ["104.22.76.166", "104.22.77.166", "172.67.11.171"].sorted())
+            
+            exp.fulfill()
         })
         
         waitForExpectations(timeout: 3, handler: { error in

@@ -5,22 +5,18 @@
 
 ### CocoaPods
 ```
-pod 'SwiftDNS', '~> 0.2.0'
+pod 'SwiftDNS', '~> 0.3.0'
 ```
 
 ## Quick Start
 ```swift
-let ds = DNSService.init()
-ds.query(domain: "vincent178.site", queue: .global(), completion: { (rr, err) in
+DNSService.query(domain: "vincent178.site", queue: .global(), completion: { (rr, err) in
   print(rr!.Answers.map { $0.RData }) // Get ip list 
-  ds.stop() // don't forget to stop service
 })
 ```
 You can also make dns query to a custom name server
 ```swift
-let ds = DNSService.init(host: "a custom name server")
-ds.query(domain: "api.disco.goateng.com", queue: .global(), completion: { (rr, err) in
+DNSService.query(host: "8.8.8.8", domain: "api.disco.goateng.com", queue: .global(), completion: { (rr, err) in
   print(rr!.Answers.map { $0.RData }) // this could be CName list as well
-  ds.stop() // don't forget to stop service
 })
 ```
