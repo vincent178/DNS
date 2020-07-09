@@ -20,3 +20,10 @@ DNSService.query(host: "8.8.8.8", domain: "api.disco.goateng.com", queue: .globa
   print(rr!.Answers.map { $0.RData }) // this could be CName list as well
 })
 ```
+Make a txt type dns query
+```swift
+DNSService.query(domain: "goat.disco.goateng.com", type: .TXT, queue: .global(), completion: { (rr, err) in
+  print(rr!.Answers.map { $0.RData })
+})
+        
+```

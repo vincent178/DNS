@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SwiftDNS'
-  s.version          = '0.3.0'
+  s.version          = '0.4.0'
   s.summary          = 'make DNS query to any DNS sever directly in iOS and MacOS with Swift'
 
   s.description      = <<-DESC
