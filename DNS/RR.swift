@@ -110,22 +110,31 @@ public struct DNSRR {
             let cls = UInt16(data[pos+offset+2]) << 8 + UInt16(data[pos+offset+3])
             let ttl = UInt32(data[pos+offset+4]) << 24 + UInt32(data[pos+offset+5]) << 16 + UInt32(data[pos+offset+6]) << 8 + UInt32(data[pos+offset+7])
             let rlen = UInt16(data[pos+offset+8]) << 8 + UInt16(data[pos+offset+9])
+            let alen = Int(rlen) + pos
             
             pos = pos + offset + 10
-            var domain = ""
+            var rdata = ""
             if typ == 1 && rlen == 4 {
                 // IPv4 address
-                domain = data[pos...pos+3].map{ String($0) }.joined(separator: ".")
+                rdata = data[pos...pos+3].map{ String($0) }.joined(separator: ".")
                 pos += 4
             } else if typ == 5 {
-                (domain, offset) = deserializeName(data: data, startAt: pos)
+                (rdata, offset) = deserializeName(data: data, startAt: pos)
                 pos += offset
+            } else if typ == 16 {
+                var txts: [String] = []
+                while pos < alen {
+                    // TODO: support multiple TXT
+                    txts.append(String(bytes: data[pos+1...pos+Int(data[pos])], encoding: .utf8)!)
+                    pos += Int(data[pos]) + pos + 1
+                }
+                rdata = txts[0]
             } else {
                 print("TYPE \(typ) DOES NOT SUPPORT YET")
                 break
             }
             
-            let answer = DNSResource(Domain: name, Typ: typ, Class: cls, TTL: ttl, RDLength: rlen, RData: domain)
+            let answer = DNSResource(Domain: name, Typ: typ, Class: cls, TTL: ttl, RDLength: rlen, RData: rdata)
             answers.append(answer)
             i -= 1
         }
@@ -175,6 +184,26 @@ public struct DNSRR {
         }
         return (ss.joined(separator: "."), i-startAt)
     }
+}
+
+// TYPE fields are used in resource records.
+public enum DNSType: UInt16 {
+    case A = 0x01 // a host address
+    case NS = 0x02 // an authoritative name server
+    case MD = 0x03 // a mail destination
+    case MF = 0x04
+    case CNAME = 0x05
+    case SOA = 0x06
+    case MB = 0x07
+    case MG = 0x08
+    case MR = 0x09
+    case NULL = 0x0A
+    case WKS = 0x0B
+    case PTR = 0x0C
+    case HINFO = 0x0D
+    case MINFO = 0x0E
+    case MX = 0x0F
+    case TXT = 0x10
 }
 
 // https://www.ietf.org/rfc/rfc1035.txt 4.1.2. Question section format

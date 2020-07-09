@@ -41,6 +41,28 @@ class DNSTests: XCTestCase {
         })
     }
     
+    func testDNSServiceQueryWithType() {
+        let exp = expectation(description: "query dns")
+
+        DNSService.query(domain: "goat.disco.goateng.com", type: .TXT, queue: .global(), completion: { (rr, err) in
+            
+            XCTAssertNil(err)
+            XCTAssertNotNil(rr)
+            
+            XCTAssertEqual(rr!.Questions[0].Domain, "goat.disco.goateng.com")
+            XCTAssertEqual(rr!.ANCount, 1)
+            XCTAssertEqual(rr!.Answers[0].RData, "api=www.goatchina.cn images=image.goatchina.cn cms=cms-cdn.goatchina.cn")
+            
+            exp.fulfill()
+        })
+        
+        waitForExpectations(timeout: 3, handler: { error in
+            if error != nil {
+                XCTFail("waitForExpectations error \(error.debugDescription)")
+            }
+        })
+    }
+    
     func testCustomNameServer() {
         let exp = expectation(description: "query dns")
 
